@@ -1,0 +1,225 @@
+basePath: /v1/comment
+definitions:
+  httputil.HTTPError400:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  httputil.HTTPError404:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status not found
+        type: string
+    type: object
+  httputil.HTTPError500:
+    properties:
+      code:
+        example: 500
+        type: integer
+      message:
+        example: status internal server error
+        type: string
+    type: object
+  models.AddCommentRequestBody:
+    properties:
+      author:
+        type: string
+      slug:
+        type: string
+      title:
+        description: |-
+          gorm.Model
+          ID     string `json:"id"`
+        type: string
+    type: object
+  models.Comment:
+    properties:
+      author:
+        type: string
+      slug:
+        type: string
+      title:
+        description: |-
+          gorm.Model // adds ID, Title, Author & Slug
+          ID     string `json:"id" gorm:"primary_key"`
+        type: string
+    type: object
+  models.UpdateCommentRequestBody:
+    properties:
+      author:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@cloudnua.io
+    name: CloudNua API Support
+    url: http://www.swagger.io/support
+  description: This is a simple CRUD HTTP service.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: 'CloudNua: Comment Service'
+  version: "1.0"
+paths:
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: get comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Comment'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError404'
+      summary: List Comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: add by json comment
+      parameters:
+      - description: Add comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCommentRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError400'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError404'
+      summary: Add a comment
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete by comment ID
+      parameters:
+      - description: Comment ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError400'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError404'
+      summary: Delete a comment
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-string-by-int
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Comment'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError404'
+      summary: Get specific comment
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update by json comment
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCommentRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError400'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError404'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError500'
+      summary: Update a comment
+      tags:
+      - comments
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
