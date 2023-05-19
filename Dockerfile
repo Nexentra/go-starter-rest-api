@@ -4,11 +4,13 @@
 
 FROM golang:1.18-alpine AS builder
 
+RUN apk add --no-cache --update go gcc g++
+
 RUN mkdir /app
 ADD . /app
 WORKDIR /app
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o app cmd/server/main.go
+RUN CGO_ENABLED=1 GOOS=linux go build -o app cmd/server/main.go
 # RUN go install github.com/cosmtrek/air@latest
 # RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s
 

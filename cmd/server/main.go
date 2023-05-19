@@ -8,6 +8,7 @@ import (
 	"github.com/nexentra/inteligpt/pkg/auth"
 	"github.com/nexentra/inteligpt/pkg/comments"
 	"github.com/nexentra/inteligpt/pkg/common/db"
+	"github.com/nexentra/inteligpt/pkg/jsight"
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -65,6 +66,10 @@ func setupRouter() *gin.Engine {
 	// fmt.Println(dsn)
 
 	r := gin.Default()
+	
+	r.Use(jsight.Validator())
+	fmt.Println("JSight middleware on")
+
 	h := db.InitDatabase(dbUrl)
 
 	comments.RegisterRoutes(r, h)
