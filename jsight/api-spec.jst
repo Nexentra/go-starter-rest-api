@@ -1,0 +1,108 @@
+JSIGHT 0.3
+
+INFO 
+  Title "CloudNua: Comment Service"
+  Description
+    This is a simple CRUD HTTP service.
+    
+    [Terms of service](http://swagger.io/terms/)  
+    [CloudNua API Support - Website](http://www.swagger.io/support)  
+    [Send email to CloudNua API Support](mailto:support@cloudnua.io)  
+    [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)  
+  Version 1.0
+
+SERVER @local
+  BaseUrl "localhost:8080"
+
+GET /ping
+  200
+    {
+      "message": "pong"
+    }
+
+#------------------------ COMMENTS ---------------------------
+
+GET /api/v1/comments
+  200 
+    [@comment]
+  404 
+    @error
+
+POST /api/v1/comments
+  Request 
+    @comment
+  201 // Created
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error
+    
+URL /api/v1/comments/{id}
+  Path
+    {
+      "id": 123 // Comment ID
+    }
+
+GET /api/v1/comments/{id} // Get specific comment
+  200
+    [@comment]
+  404 // Not found
+    @error
+  
+PUT /api/v1/comments/{id} // Update a comment
+  Request
+    @comment
+  200
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error 
+
+DELETE /api/v1/comments/{id} // Delete a comment
+  200
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error   
+
+#------------------------ COMMON --------------------------
+GET /
+  200 any
+
+GET /jsight // Getting service API specification
+  200 any
+#------------------------ TYPES ---------------------------
+
+TYPE @comment
+{
+  "author": "johnsmith",
+  "slug"  : "my-comment",
+  "title" : "My awesome comment"
+}
+
+TYPE @error
+  @appError | @validationError
+
+TYPE @appError
+{
+  "code": 400, // Http status code
+  "message": "status not found"
+}
+
+TYPE @validationError
+{
+    "reportedBy": "HTTP Request validation",
+    "type": "http_body_error",
+    "code": 32001,
+    "title": "HTTP body error",
+    "detail": "Schema does not support key \"title1\"",
+    "position": {                   // {optional: true}
+        "filepath": "api-spec.jst", // {optional: true}
+        "index": 58,                // {optional: true}
+        "line": 4,                  // {optional: true}
+        "col": 3                    // {optional: true}
+    }
+}
