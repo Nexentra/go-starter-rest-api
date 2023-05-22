@@ -22,7 +22,8 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 func Validator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if jSight == nil {
-			jSight = NewJSight("./pkg/jsight/jsightplugin-alpine.so")
+			jSight = NewJSight("./middlware/jsight/jsightplugin-alpine.so") // For Alpine
+			// jSight = NewJSight("./middlware/jsight/jsightplugin.so") // For other linuxes
 			fmt.Println("JSight validator enabled")
 			fmt.Print(jSight.Stat())
 		}

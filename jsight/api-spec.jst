@@ -1,10 +1,81 @@
 JSIGHT 0.3
 
-GET /
-  200 any
+INFO 
+  Title "CloudNua: Comment Service"
+  Description
+    This is a simple CRUD HTTP service.
+    
+    [Terms of service](http://swagger.io/terms/)  
+    [CloudNua API Support - Website](http://www.swagger.io/support)  
+    [Send email to CloudNua API Support](mailto:support@cloudnua.io)  
+    [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)  
+  Version 1.0
 
 GET /ping
   200
     {
       "message": "pong"
     }
+
+#------------------------ COMMENTS ---------------------------
+
+GET /api/v1/comments
+  200 
+    [@comment]
+  404 
+    @error
+
+POST /api/v1/comments
+  Request 
+    @comment
+  201 // Created
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error
+    
+URL /api/v1/comments/{id}
+  Path
+    {
+      "id": 123 // Comment ID
+    }
+
+GET /api/v1/comments/{id} // Get specific comment
+  200
+    [@comment]
+  404 // Not found
+    @error
+  
+PUT /api/v1/comments/{id} // Update a comment
+  Request
+    @comment
+  200
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error 
+
+DELETE /api/v1/comments/{id} // Delete a comment
+  200
+    @comment
+  400 // Bad request
+    @error
+  404 // Not Found
+    @error   
+
+#------------------------ TYPES ---------------------------
+
+TYPE @comment
+{
+  "author": "johnsmith",
+  "slug"  : "my-comment",
+  "title" : "My awesome comment"
+}
+
+TYPE @error
+{
+  "code": 400, // Http status code
+  "message": "status not found"
+}
