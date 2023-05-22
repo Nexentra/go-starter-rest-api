@@ -11,6 +11,9 @@ INFO
     [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)  
   Version 1.0
 
+SERVER @local
+  BaseUrl "localhost:8080"
+
 GET /ping
   200
     {
@@ -65,6 +68,12 @@ DELETE /api/v1/comments/{id} // Delete a comment
   404 // Not Found
     @error   
 
+#------------------------ COMMON --------------------------
+GET /
+  200 any
+
+GET /jsight // Getting service API specification
+  200 any
 #------------------------ TYPES ---------------------------
 
 TYPE @comment
@@ -75,7 +84,25 @@ TYPE @comment
 }
 
 TYPE @error
+  @appError | @validationError
+
+TYPE @appError
 {
   "code": 400, // Http status code
   "message": "status not found"
+}
+
+TYPE @validationError
+{
+    "reportedBy": "HTTP Request validation",
+    "type": "http_body_error",
+    "code": 32001,
+    "title": "HTTP body error",
+    "detail": "Schema does not support key \"title1\"",
+    "position": {                   // {optional: true}
+        "filepath": "api-spec.jst", // {optional: true}
+        "index": 58,                // {optional: true}
+        "line": 4,                  // {optional: true}
+        "col": 3                    // {optional: true}
+    }
 }

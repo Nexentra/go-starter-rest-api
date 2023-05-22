@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"io"
 	"bytes"
+	"os"
+	"regexp"
 )
 
 var jSight JSight
@@ -35,6 +37,7 @@ func Validator() gin.HandlerFunc {
 
 		jSight.ClearCache() // Comment this line in production to gain performance!!!
 
+		// validate request
 		err := jSight.ValidateHTTPRequest(
 			jsightSpecPath,
 			c.Request.Method,
@@ -49,6 +52,15 @@ func Validator() gin.HandlerFunc {
 			return
 		}
 
+		// check, if the jsight spec was requested
+		matched, _ := regexp.MatchString(`.*jsight/?`, c.Request.RequestURI)
+		if matched {
+			jsightCode, _ := os.ReadFile(jsightSpecPath)
+			c.Writer.WriteHeader(200)
+			c.Writer.Write(jsightCode)
+			return
+		}
+
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = blw
 
@@ -56,6 +68,7 @@ func Validator() gin.HandlerFunc {
 
 		// before response
 
+		// validate response
 		err = jSight.ValidateHTTPResponse(
 			jsightSpecPath,
 			c.Request.Method,
